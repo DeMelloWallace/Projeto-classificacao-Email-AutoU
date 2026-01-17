@@ -58,6 +58,14 @@ A solução busca:
 
 ---
 
+Observações Importantes
+
+Limites de cota da OpenAI podem causar falhas se excedidos.
+Em caso de erro da API, a aplicação retorna respostas simuladas (fallback).
+Ideal para testes rápidos sem necessidade de criar conta na OpenAI.
+
+---
+
 ## Arquitetura do Projeto
 
 ```text
