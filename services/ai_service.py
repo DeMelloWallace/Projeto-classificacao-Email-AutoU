@@ -1,27 +1,25 @@
 import openai
-import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+def classify_and_generate_response(text):
+    
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": f"Classifique este email e sugira uma resposta:\n{text}"}
+            ]
+        )
+        categoria = "Produtivo"
+        resposta = response['choices'][0]['message']['content']
+        return categoria, resposta
 
-def classify_and_generate_response(email_text):
-    prompt = f"""
-Classifique o email abaixo como Produtivo ou Improdutivo e gere uma resposta educada e profissional.
+    except openai.error.OpenAIError as e:
+        if any(word in text.lower() for word in ["pedido", "solicitação", "ajuda", "dúvida"]):
+            categoria = "Produtivo"
+            resposta = "Obrigado pelo seu contato. Iremos verificar e responder em breve."
+        else:
+            categoria = "Improdutivo"
+            resposta = "Agradecemos a sua mensagem."
 
-Email:
-{email_text}
-"""
-
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Você é um assistente corporativo especializado em emails."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.3
-    )
-
-    output = response.choices[0].message.content
-
-    categoria = "Produtivo" if "Produtivo" in output else "Improdutivo"
-
-    return categoria, output
+        print(f"[Fallback] OpenAIError: {str(e)}")
+        return categoria, resposta
