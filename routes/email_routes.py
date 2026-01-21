@@ -15,7 +15,6 @@ def index():
         if request.method == "POST":
             texto = request.form.get("email_text", "")
 
-            # Se houver arquivo enviado
             if "email_file" in request.files:
                 arquivo = request.files["email_file"]
                 if arquivo.filename != "":
